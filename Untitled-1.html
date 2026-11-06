@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 20px;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 440px;
+            background: #ffffff;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 6px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #222;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .tab-buttons {
+            display: flex;
+            margin-bottom: 22px;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 10px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-weight: bold;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.25s ease;
+        }
+
+        .tab-btn.active {
+            background: #ffffff;
+            color: #667eea;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #dcdfe6;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        .password-box input {
+            padding-right: 64px;
+        }
+
+        .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: none;
+            color: #667eea;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .forgot-link {
+            text-align: right;
+            margin-top: 6px;
+        }
+
+        .forgot-link a {
+            color: #667eea;
+            font-size: 13px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .forgot-link a:hover {
+            text-decoration: underline;
+        }
+
+        .verification {
+            border: 1px solid #e2e8f0;
+            border-radius: 9px;
+            padding: 12px;
+            background: #fbfcfe;
+            margin-top: 4px;
+        }
+
+        .verify-check {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .verify-check input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .captcha-box {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #cbd5e1;
+        }
+
+        .captcha-question {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #475569;
+        }
+
+        .captcha-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .refresh-btn {
+            border: none;
+            background: #e2e8f0;
+            border-radius: 8px;
+            padding: 0 16px;
+            cursor: pointer;
+            font-size: 18px;
+            color: #334155;
+        }
+
+        .refresh-btn:hover {
+            background: #cbd5e1;
+        }
+
+        .terms {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            margin: 16px 0;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .terms input {
+            margin-top: 2px;
+        }
+
+        .terms a {
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 10px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 18px rgba(102, 126, 234, 0.3);
+        }
+
+        .nav-switch {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .nav-switch a {
+            color: #667eea;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .nav-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .success { color: #16a34a; }
+        .error { color: #dc2626; }
+
+        /* Dashboard display after login */
+        .dashboard-view {
+            display: none;
+            text-align: center;
+        }
+
+        .user-details {
+            text-align: left;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .user-details div {
+            margin-bottom: 8px;
+        }
+
+        .user-details div:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-details span {
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: #ef4444;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: #dc2626;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-body {
+            background: #ffffff;
+            width: 100%;
+            max-width: 400px;
+            padding: 28px;
+            border-radius: 14px;
+            position: relative;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 25px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-container">
+    <div class="logo">MyWebsite</div>
+
+    <!-- Switchable Authentication Forms -->
+    <div id="authContent">
+        <div class="tab-buttons">
+            <button class="tab-btn active" id="loginTabBtn" onclick="showTab('login')">Sign In</button>
+            <button class="tab-btn" id="signupTabBtn" onclick="showTab('signup')">Create Account</button>
+        </div>
+
+        <!-- ================= LOGIN FORM ================= -->
+        <div class="form-section active" id="loginSection">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Access your account by logging in</p>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="example@gmail.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <div class="password-box">
+                        <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password">
+                        <button type="button" class="toggle-btn" onclick="toggleVisibility('loginPassword', this)">Show</button>
+                    </div>
+                    <div class="forgot-link">
+                        <a onclick="showResetModal()">Forgot Password?</a>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Human Verification</label>
+                    <div class="verification">
+                        <label class="verify-check">
+                            <input type="checkbox" id="loginHumanCheck" onchange="toggleCaptcha('login', this)">
+                            <span>I'm not a robot</span>
+                        </label>
+                        <div class="captcha-box" id="loginCaptchaBox">
+                            <div class="captcha-question" id="loginCaptchaQuestion">What is 5 + 3?</div>
+                            <div class="captcha-row">
+                                <input type="number" id="loginCaptchaAnswer" placeholder="Answer">
+                                <button type="button" class="refresh-btn" onclick="generateCaptcha('login')" title="Refresh calculation">&#8635;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit">Sign In</button>
+                <div id="loginStatus" class="message"></div>
+            </form>
+
+            <div class="nav-switch">
+                Don't have an account? <a onclick="showTab('signup')">Create Account</a>
+            </div>
+        </div>
+
+        <!-- ================= SIGNUP FORM ================= -->
+        <div class="form-section" id="signupSection">
+            <h2>Create Account</h2>
+            <p class="subtitle">Sign up to get started</p>
+
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupName">Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required autocomplete="name">
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" placeholder="example@gmail.com" required autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPhone">Phone Number</label>
+                    <input type="tel" id="signupPhone" placeholder="Enter 10-digit number" pattern="[0-9]{10}" required autocomplete="tel">
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <div class="password-box">
+                        <input type="password" id="signupPassword" placeholder="Min 8 characters" minlength="8" required autocomplete="new-password">
+                        <button type="button" class="toggle-btn" onclick="toggleVisibility('signupPassword', this)">Show</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupConfirmPassword">Confirm Password</label>
+                    <div class="password-box">
+                        <input type="password" id="signupConfirmPassword" placeholder="Confirm password" required autocomplete="new-password">
+                        <button type="button" class="toggle-btn" onclick="toggleVisibility('signupConfirmPassword', this)">Show</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Human Verification</label>
+                    <div class="verification">
+                        <label class="verify-check">
+                            <input type="checkbox" id="signupHumanCheck" onchange="toggleCaptcha('signup', this)">
+                            <span>I'm not a robot</span>
+                        </label>
+                        <div class="captcha-box" id="signupCaptchaBox">
+                            <div class="captcha-question" id="signupCaptchaQuestion">What is 5 + 3?</div>
+                            <div class="captcha-row">
+                                <input type="number" id="signupCaptchaAnswer" placeholder="Answer">
+                                <button type="button" class="refresh-btn" onclick="generateCaptcha('signup')" title="Refresh calculation">&#8635;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="terms">
+                    <input type="checkbox" id="signupTerms" required>
+                    <span>I agree to the <a href="#">Terms &amp; Conditions</a> and <a href="#">Privacy Policy</a>.</span>
+                </div>
+
+                <button type="submit" class="btn-submit">Sign Up</button>
+                <div id="signupStatus" class="message"></div>
+            </form>
+
+            <div class="nav-switch">
+                Already have an account? <a onclick="showTab('login')">Login</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= DASHBOARD VIEW (AFTER SUCCESSFUL LOGIN) ================= -->
+    <div class="dashboard-view" id="dashboardView">
+        <h2 id="userWelcome">Welcome Back!</h2>
+        <p class="subtitle">You have successfully authenticated.</p>
+
+        <div class="user-details">
+            <div>Name: <span id="dashName">-</span></div>
+            <div>Email: <span id="dashEmail">-</span></div>
+            <div>Phone: <span id="dashPhone">-</span></div>
+        </div>
+
+        <button class="btn-logout" onclick="logout()">Sign Out</button>
+    </div>
+</div>
+
+<!-- ================= RESET PASSWORD MODAL ================= -->
+<div class="modal" id="resetModal">
+    <div class="modal-body">
+        <button class="modal-close" onclick="hideResetModal()">&times;</button>
+        <h3 style="margin-bottom: 6px; color: #1e293b;">Reset Password</h3>
+        <p style="font-size: 13px; color: #64748b; margin-bottom: 18px;">Type your email and set a new password.</p>
+
+        <form id="resetForm">
+            <div class="form-group">
+                <label for="resetEmail">Email Address</label>
+                <input type="email" id="resetEmail" placeholder="example@gmail.com" required>
+            </div>
+            <div class="form-group">
+                <label for="resetNewPassword">New Password</label>
+                <input type="password" id="resetNewPassword" placeholder="Min 8 characters" minlength="8" required>
+            </div>
+            <button type="submit" class="btn-submit" style="margin-top: 4px;">Update Password</button>
+            <div id="resetStatus" class="message"></div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const captchaState = {
+        login: null,
+        signup: null
+    };
+
+    function showTab(type) {
+        document.getElementById("loginSection").classList.toggle("active", type === "login");
+        document.getElementById("signupSection").classList.toggle("active", type === "signup");
+        document.getElementById("loginTabBtn").classList.toggle("active", type === "login");
+        document.getElementById("signupTabBtn").classList.toggle("active", type === "signup");
+
+        document.getElementById("loginStatus").textContent = "";
+        document.getElementById("signupStatus").textContent = "";
+    }
+
+    function generateCaptcha(context) {
+        const num1 = Math.floor(Math.random() * 10) + 1;
+        const num2 = Math.floor(Math.random() * 10) + 1;
+        captchaState[context] = num1 + num2;
+
+        document.getElementById(`${context}CaptchaQuestion`).textContent = `What is ${num1} + ${num2}?`;
+        document.getElementById(`${context}CaptchaAnswer`).value = "";
+    }
+
+    function toggleCaptcha(context, cb) {
+        const box = document.getElementById(`${context}CaptchaBox`);
+        if (cb.checked) {
+            box.style.display = "block";
+            generateCaptcha(context);
+        } else {
+            box.style.display = "none";
+            captchaState[context] = null;
+        }
+    }
+
+    function toggleVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        const isPassword = input.type === "password";
+        input.type = isPassword ? "text" : "password";
+        btn.textContent = isPassword ? "Hide" : "Show";
+    }
+
+    function showResetModal() {
+        document.getElementById("resetModal").style.display = "flex";
+    }
+
+    function hideResetModal() {
+        document.getElementById("resetModal").style.display = "none";
+        document.getElementById("resetStatus").textContent = "";
+        document.getElementById("resetForm").reset();
+    }
+
+    window.addEventListener("click", function(e) {
+        const modal = document.getElementById("resetModal");
+        if (e.target === modal) hideResetModal();
+    });
+
+    // Sign Up Handler
+    document.getElementById("signupForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("signupName").value.trim();
+        const email = document.getElementById("signupEmail").value.trim().toLowerCase();
+        const phone = document.getElementById("signupPhone").value.trim();
+        const password = document.getElementById("signupPassword").value;
+        const confirmPassword = document.getElementById("signupConfirmPassword").value;
+        const isHuman = document.getElementById("signupHumanCheck").checked;
+        const captchaAnswer = document.getElementById("signupCaptchaAnswer").value.trim();
+        const terms = document.getElementById("signupTerms").checked;
+        const msg = document.getElementById("signupStatus");
+
+        if (!isHuman) {
+            msg.className = "message error";
+            msg.textContent = "Please confirm that you are human.";
+            return;
+        }
+
+        if (captchaAnswer === "" || Number(captchaAnswer) !== captchaState.signup) {
+            msg.className = "message error";
+            msg.textContent = "Incorrect CAPTCHA answer. Try again.";
+            generateCaptcha("signup");
+            return;
+        }
+
+        if (password !== confirmPassword) {
+            msg.className = "message error";
+            msg.textContent = "Passwords do not match.";
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+        if (users.some(u => u.email === email)) {
+            msg.className = "message error";
+            msg.textContent = "An account with this email already exists.";
+            return;
+        }
+
+        users.push({ name, email, phone, password });
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+
+        msg.className = "message success";
+        msg.textContent = "Account created successfully! Switching to sign in...";
+
+        setTimeout(() => {
+            document.getElementById("signupForm").reset();
+            document.getElementById("signupCaptchaBox").style.display = "none";
+            document.getElementById("loginEmail").value = email;
+            showTab("login");
+        }, 1200);
+    });
+
+    // Login Handler
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById("loginEmail").value.trim().toLowerCase();
+        const password = document.getElementById("loginPassword").value;
+        const isHuman = document.getElementById("loginHumanCheck").checked;
+        const captchaAnswer = document.getElementById("loginCaptchaAnswer").value.trim();
+        const msg = document.getElementById("loginStatus");
+
+        if (!isHuman) {
+            msg.className = "message error";
+            msg.textContent = "Please check the 'I\'m not a robot' box.";
+            return;
+        }
+
+        if (captchaAnswer === "" || Number(captchaAnswer) !== captchaState.login) {
+            msg.className = "message error";
+            msg.textContent = "Incorrect CAPTCHA answer. Try again.";
+            generateCaptcha("login");
+            return;
+        }
+
+        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+        const account = users.find(u => u.email === email && u.password === password);
+
+        if (!account) {
+            msg.className = "message error";
+            msg.textContent = "Invalid email or password.";
+            return;
+        }
+
+        msg.className = "message success";
+        msg.textContent = `Welcome back, ${account.name}!`;
+
+        setTimeout(() => {
+            loadDashboard(account);
+        }, 800);
+    });
+
+    // Password Reset Handler
+    document.getElementById("resetForm").addEventListener("submit", function(e) {
+        e.preventDefault();
+
+        const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+        const newPassword = document.getElementById("resetNewPassword").value;
+        const msg = document.getElementById("resetStatus");
+
+        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+        const userIndex = users.findIndex(u => u.email === email);
+
+        if (userIndex === -1) {
+            msg.className = "message error";
+            msg.textContent = "No registered user found with this email.";
+            return;
+        }
+
+        users[userIndex].password = newPassword;
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+
+        msg.className = "message success";
+        msg.textContent = "Password updated! You can now sign in.";
+
+        setTimeout(() => {
+            hideResetModal();
+        }, 1200);
+    });
+
+    // Session display
+    function loadDashboard(user) {
+        document.getElementById("authContent").style.display = "none";
+        document.getElementById("dashboardView").style.display = "block";
+
+        document.getElementById("userWelcome").textContent = `Welcome, ${user.name}!`;
+        document.getElementById("dashName").textContent = user.name;
+        document.getElementById("dashEmail").textContent = user.email;
+        document.getElementById("dashPhone").textContent = user.phone || "Not provided";
+    }
+
+    function logout() {
+        document.getElementById("loginForm").reset();
+        document.getElementById("loginCaptchaBox").style.display = "none";
+        document.getElementById("dashboardView").style.display = "none";
+        document.getElementById("authContent").style.display = "block";
+        showTab("login");
+    }
+</script>
+
+</body>
+</html>
